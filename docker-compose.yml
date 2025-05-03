@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  # 🔧 Backend API
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGO_URI=mongodb+srv://prayasjain12sci:Hydpj12345@firstcluster.kpfztch.mongodb.net/?retryWrites=true&w=majority&appName=firstcluster
+      - JWT_SECRET=a588639c71cde99f03c15997e2e19e441384245e4bf073d564dbe3685a75b24025eb6fb96a16961217fefce40f2caf823afbf9efa05040b7e52e2e74eeb3c5fb
+      - NODE_ENV=development
+    depends_on:
+      - mongo
+
+  # 🌐 Frontend React App
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  mongo-data:
