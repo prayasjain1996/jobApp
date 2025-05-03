@@ -5,6 +5,9 @@ on:
     branches:
       - master
 
+env:
+  AWS_REGION: ap-south-1  # Explicitly set region as an environment variable
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -13,35 +16,29 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    # Set up Docker Buildx
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
-    
-    - name: Print environment variables
-      run: |
-        echo "AWS Region: ${{ secrets.AWS_REGION }}"
-        echo "AWS Access Key ID: ${{ secrets.AWS_ACCESS_KEY_ID }}"
-        echo "AWS Secret Access Key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}"
-    
 
-    # Log in to Amazon ECR using AWS secrets
-    - name: Log in to Amazon ECR
-      uses: aws-actions/amazon-ecr-login@v1
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        region: ap-south-1  # We store AWS region as a secret too
+        aws-region: ${{ env.AWS_REGION }}  # Region explicitly passed here
 
-    # Build frontend Docker image
+    - name: Log in to Amazon ECR
+      uses: aws-actions/amazon-ecr-login@v1
+      with:
+        region: ${{ env.AWS_REGION }}  # Make sure this is explicitly passed here
+
     - name: Build frontend Docker image
       run: |
         docker build -t jobapp-frontend ./frontend
-        docker tag jobapp-frontend:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/jobapp-frontend:latest
-        docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/jobapp-frontend:latest
+        docker tag jobapp-frontend:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/jobapp-frontend:latest
+        docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/jobapp-frontend:latest
 
-    # Build backend Docker image
     - name: Build backend Docker image
       run: |
         docker build -t jobapp-backend ./backend
-        docker tag jobapp-backend:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/jobapp-backend:latest
-        docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/jobapp-backend:latest
+        docker tag jobapp-backend:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/jobapp-backend:latest
+        docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/jobapp-backend:latest
