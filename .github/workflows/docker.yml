@@ -29,12 +29,12 @@ jobs:
     - name: Build frontend Docker image
       run: |
         docker build -t jobapp-frontend ./frontend
-        docker tag jobapp-frontend:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/jobapp-frontend:latest
-        docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/jobapp-frontend:latest
+        docker tag jobapp-frontend:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/jobapp-frontend:latest
+        docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/jobapp-frontend:latest
 
     # Build backend Docker image
     - name: Build backend Docker image
       run: |
         docker build -t jobapp-backend ./backend
-        docker tag jobapp-backend:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/jobapp-backend:latest
-        docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/jobapp-backend:latest
+        docker tag jobapp-backend:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/jobapp-backend:latest
+        docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/jobapp-backend:latest
