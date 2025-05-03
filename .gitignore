@@ -11,6 +11,3 @@ dist/
 
 # Ignore logs
 *.log
-
-# Ignore Docker files
-Dockerfile*
